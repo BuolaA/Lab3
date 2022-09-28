@@ -41,21 +41,43 @@ public class noteservlet extends HttpServlet {
         
         request.setAttribute("note", note);
         
-        this.getServletContext().getRequestDispatcher("/WEB-INF/viewnote.jsp").forward(request,response);
-        //this.getServletContext().getRequestDispatcher("/WEB-INF/editnote.jsp").forward(request,response);   
+        String edit = request.getParameter("edit");
         
+        if (edit != null) {
+            
+            this.getServletContext().getRequestDispatcher("/WEB-INF/editnote.jsp").forward(request,response);
+            
+        } else {
+            
+            this.getServletContext().getRequestDispatcher("/WEB-INF/viewnote.jsp").forward(request,response);
+            
+        }    
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
-     * @param response servlet response
+     * @param response servlet response                                         
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String title = request.getParameter("title");
+        String contents = request.getParameter("contents");
+        
+        String path = getServletContext().getRealPath("/WEB-INF/note.txt");
+        
+        // to write to a file
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path, false))); 
+        
+        pw.println(title);
+        pw.println(contents);
+        pw.close();
+        
+        response.sendRedirect("note");
     }
 }
